@@ -18,11 +18,13 @@ void Renderer3D::render()
 	SDL_RenderClear(SDL_render);
 	SDL_SetRenderDrawColor(SDL_render, 255, 192, 203, SDL_ALPHA_OPAQUE);
 
-	//rotation += 1 * DeltaTime;
+	rotation += 1 * DeltaTime;
 
 	for (auto& edge : edges) {
-		Point2D start = projection(points[edge.start]);
-		Point2D end = projection(points[edge.end]);
+		Point3D rotatedPointStart = rotateOnX(points[edge.start]);
+		Point3D rotatedPointEnd = rotateOnX(points[edge.end]);
+		Point2D start = projection(rotatedPointStart);
+		Point2D end = projection(rotatedPointEnd);
 
 		SDL_RenderDrawLine(SDL_render, start.x, start.y, end.x, end.y);
 	}
@@ -38,4 +40,22 @@ void Renderer3D::render()
 Point2D Renderer3D::projection(Point3D point)
 {
 	return Point2D{ WindowSizeX / 2 + (point.x * FL) / (FL + point.z) * 100, WindowSizeY / 2 + (point.y * FL) / (FL + point.z) * 100 };
+}
+
+Point3D Renderer3D::rotateOnX(Point3D point)
+{
+	Point3D rotatedPoint;
+	rotatedPoint.x = point.x;
+	rotatedPoint.y = cos(rotation) * point.y - sin(rotation) * point.z;
+	rotatedPoint.z = sin(rotation) * point.y + cos(rotation) * point.z;
+	return rotatedPoint;
+}
+
+Point3D Renderer3D::rotateOnY(Point3D point)
+{
+	Point3D rotatedPoint;
+	rotatedPoint.x = cos(rotation) * point.x + sin(rotation) * point.z;
+	rotatedPoint.y = point.y;
+	rotatedPoint.z = - sin(rotation) * point.x + cos(rotation) * point.z;
+	return rotatedPoint;
 }

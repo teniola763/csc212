@@ -15,10 +15,13 @@ public:
 
 private:
 	Point2D projection(Point3D point);
+	Point3D rotateOnX(Point3D point);
+	Point3D rotateOnY(Point3D point);
 
 	float FL = 5;
 
 	float DeltaTime = 0;
+	float rotation = 0;
 
 	int WindowSizeX;
 	int WindowSizeY;
